@@ -1,0 +1,12 @@
+# Dependencies
+node_modules/
+dist/
+.npm/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Environment variables (just in case you use them later)
+.env
+.env.local
