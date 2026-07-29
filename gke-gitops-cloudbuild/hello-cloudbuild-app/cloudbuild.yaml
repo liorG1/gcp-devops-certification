@@ -1,5 +1,5 @@
 steps:
-# 1. הרצת בדיקות יוניט (בגלל שהוא כבר בתיקייה, פשוט מריצים)
+# 1. הרצת בדיקות יוניט
 - name: 'python:3.7-slim'
   id: Test
   entrypoint: /bin/sh
@@ -7,7 +7,7 @@ steps:
   - -c
   - 'pip install flask && python test_app.py -v'
 
-# 2. בניית ה-Docker Image מתוך התיקייה הנוכחית (נקודה בסוף)
+# 2. בניית ה-Docker Image
 - name: 'gcr.io/cloud-builders/docker'
   id: Build
   args:
