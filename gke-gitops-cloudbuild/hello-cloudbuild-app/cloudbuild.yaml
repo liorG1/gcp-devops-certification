@@ -1,20 +1,20 @@
 steps:
-# 1. הרצת בדיקות יוניט
+# 1. הרצת בדיקות יוניט (בגלל שהוא כבר בתיקייה, פשוט מריצים)
 - name: 'python:3.7-slim'
   id: Test
   entrypoint: /bin/sh
   args:
   - -c
-  - 'cd gke-gitops-cloudbuild/hello-cloudbuild-app && pip install flask && python test_app.py -v'
+  - 'pip install flask && python test_app.py -v'
 
-# 2. בניית ה-Docker Image
+# 2. בניית ה-Docker Image מתוך התיקייה הנוכחית (נקודה בסוף)
 - name: 'gcr.io/cloud-builders/docker'
   id: Build
   args:
   - 'build'
   - '-t'
   - 'us-west4-docker.pkg.dev/$PROJECT_ID/my-repository/hello-cloudbuild:$SHORT_SHA'
-  - 'gke-gitops-cloudbuild/hello-cloudbuild-app'
+  - '.'
 # 3. דחיפה ל-Artifact Registry
 - name: 'gcr.io/cloud-builders/docker'
   id: Push
