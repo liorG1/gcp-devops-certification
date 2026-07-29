@@ -25,11 +25,10 @@ steps:
   - 'push'
   - 'us-west4-docker.pkg.dev/$PROJECT_ID/my-repository/hello-cloudbuild:$SHORT_SHA'
 
-# 4. שלב ה-CD המתוקן (בשורה אחת נקייה)
+# 4. שלב ה-CD המאובטח
 - name: 'gcr.io/cloud-builders/git'
   id: 'Generate Manifest'
   entrypoint: /bin/sh
-  args: ['-c', 'sed "s/COMMIT_SHA/$PROJECT_ID\/my-repository\/hello-cloudbuild:$SHORT_SHA/g" gke-gitops-cloudbuild/kubernetes.yaml.tpl > gke-gitops-cloudbuild/gke-gitops-env/kubernetes.yaml']
-
-options:
-  logging: CLOUD_LOGGING_ONLY
+  args:
+  - '-c'
+  - 'sed "s|COMMIT_SHA|$PROJECT_ID/my-repository/hello-cloudbuild:$SHORT_SHA|g" gke-gitops-cloudbuild/kubernetes.yaml.tpl > gke-gitops-cloudbuild/gke-gitops-env/kubernetes.yaml'
