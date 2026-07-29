@@ -5,7 +5,7 @@ steps:
   entrypoint: /bin/sh
   args:
   - -c
-  - 'cd gcp-devops-certification/gke-gitops-cloudbuild/hello-cloudbuild-app && pip install flask && python test_app.py -v'
+  - 'cd gke-gitops-cloudbuild/hello-cloudbuild-app && pip install flask && python test_app.py -v'
 
 # 2. בניית ה-Docker Image
 - name: 'gcr.io/cloud-builders/docker'
@@ -14,7 +14,7 @@ steps:
   - 'build'
   - '-t'
   - 'us-west4-docker.pkg.dev/$PROJECT_ID/my-repository/hello-cloudbuild:$SHORT_SHA'
-  - 'gcp-devops-certification/gke-gitops-cloudbuild/hello-cloudbuild-app'
+  - 'gke-gitops-cloudbuild/hello-cloudbuild-app'
 # 3. דחיפה ל-Artifact Registry
 - name: 'gcr.io/cloud-builders/docker'
   id: Push
