@@ -33,14 +33,11 @@ steps:
   - '-c'
   - 'sed "s|COMMIT_SHA|$PROJECT_ID/my-repository/hello-cloudbuild:$SHORT_SHA|g" gke-gitops-cloudbuild/kubernetes.yaml.tpl > gke-gitops-cloudbuild/gke-gitops-env/kubernetes.yaml'
 
-# 5. שלב ה-CD הסופי: פריסה לתוך ה-GKE Cluster
+# 5. שלב ה-CD הסופי: פריסה לתוך ה-GKE Cluster האמיתי
 - name: 'gcr.io/cloud-builders/gke-deploy'
   id: 'Deploy to GKE Cluster'
   args:
   - 'run'
   - '--filename=gke-gitops-cloudbuild/gke-gitops-env/kubernetes.yaml'
-  - '--cluster=hello-cluster'       # ודא שזהו השם המדויק של ה-GKE Cluster שלך
-  - '--location=us-west4'           # ודא שזה המיקום/Region של ה-Cluster שלך
-
-options:
-  logging: CLOUD_LOGGING_ONLY
+  - '--cluster=hello-cloudbuild'
+  - '--location=us-west4'
