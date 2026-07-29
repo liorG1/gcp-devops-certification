@@ -41,3 +41,6 @@ steps:
   - '--filename=gke-gitops-cloudbuild/gke-gitops-env/kubernetes.yaml'
   - '--cluster=hello-cloudbuild'
   - '--location=us-west4'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
