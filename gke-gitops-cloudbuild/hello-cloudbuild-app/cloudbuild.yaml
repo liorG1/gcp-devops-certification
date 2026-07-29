@@ -1,5 +1,5 @@
 steps:
-# 1. הרצת בדיקות יוניט מתוך התיקייה הנכונה
+# 1. הרצת בדיקות יוניט מהנתיב המדויק
 - name: 'python:3.7-slim'
   id: Test
   entrypoint: /bin/sh
@@ -7,7 +7,7 @@ steps:
   - -c
   - 'cd gke-gitops-cloudbuild/hello-cloudbuild-app && pip install flask && python test_app.py -v'
 
-# 2. בניית ה-Docker Image (כאן נוסיף נקודה בסוף כדי להגדיר את הקשר לתיקייה)
+# 2. בניית ה-Docker Image מהנתיב המדויק
 - name: 'gcr.io/cloud-builders/docker'
   id: Build
   args:
