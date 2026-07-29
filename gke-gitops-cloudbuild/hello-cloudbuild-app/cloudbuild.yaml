@@ -22,3 +22,7 @@ steps:
   args:
   - 'push'
   - 'us-west4-docker.pkg.dev/$PROJECT_ID/my-repository/hello-cloudbuild:$SHORT_SHA'
+
+# הוסף את השורות הבאות בסוף הקובץ:
+options:
+  logging: CLOUD_LOGGING_ONLY
