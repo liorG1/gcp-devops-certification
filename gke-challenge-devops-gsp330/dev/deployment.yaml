@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: dev-container
-        image: us-west4-docker.pkg.dev/terraform-learning-503012/my-repository/hello-cloudbuild-dev:v2.0
+        image: us-west4-docker.pkg.dev/terraform-learning-503012/my-repository/hello-cloudbuild-dev:v3.0
         ports:
         - containerPort: 8080
