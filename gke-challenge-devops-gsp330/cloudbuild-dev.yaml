@@ -1,23 +1,23 @@
 steps:
-  # Step 1: Compile the Go Application
-  - name: 'gcr.io/cloud-builders/go'
-    env: ['GOPATH=/gopath']
-    args: ['build', '-o', 'main', 'main.go']
+# Step 0: Build the Go binary
+- name: 'gcr.io/cloud-builders/go'
+  args: ['build', '-o', 'main', 'main.go']
+  dir: 'gke-challenge-devops-gsp330'
 
-  # Step 2: Build the Docker image for the Go application
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-west4-docker.pkg.dev/terraform-learning-503012/my-repository/hello-cloudbuild-dev:v3.0', '.']
+# Step 1: Build the Docker image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'us-west4-docker.pkg.dev/terraform-learning-503012/my-repository/hello-cloudbuild-dev:v3.0', '.']
+  dir: 'gke-challenge-devops-gsp330'
 
-  # Step 3: Push the Docker image to Artifact Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'us-west4-docker.pkg.dev/terraform-learning-503012/my-repository/hello-cloudbuild-dev:v3.0']
+# Step 2: Push the Docker image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'us-west4-docker.pkg.dev/terraform-learning-503012/my-repository/hello-cloudbuild-dev:v3.0']
+  dir: 'gke-challenge-devops-gsp330'
 
-  # Step 4: Apply the deployment YAML file to the dev namespace
-  - name: 'gcr.io/cloud-builders/kubectl'
-    id: 'Deploy'
-    args: ['-n', 'dev', 'apply', '-f', 'dev/deployment.yaml']
-    env:
-    - 'CLOUDSDK_COMPUTE_ZONE=us-west4-a'
-    - 'CLOUDSDK_CONTAINER_CLUSTER=hello-cluster'
-options:
-  logging: CLOUD_LOGGING_ONLY
+# Step 3: Deploy to Kubernetes GKE
+- name: 'gcr.io/cloud-builders/kubectl'
+  args: ['apply', '-f', 'dev/deployment.yaml', '-n', 'dev']
+  dir: 'gke-challenge-devops-gsp330'
+  env:
+  - 'CLOUDSDK_COMPUTE_ZONE=us-west4-b'
+  - 'CLOUDSDK_CONTAINER_CLUSTER=hello-cluster'
