@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: fortune-app
-          image: "us-central1-docker.pkg.dev/qwiklabs-resources/spl-lab-apps/fortune-service:3.0.0"
+          image: "us-central1-docker.pkg.dev/qwiklabs-resources/spl-lab-apps/fortune-service:1.0.0"
           ports:
             - name: http
               containerPort: 8080
