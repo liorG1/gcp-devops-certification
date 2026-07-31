@@ -14,6 +14,7 @@ spec:
     spec:
       containers:
       - name: production-container
-        image: <todo>
+        # שימוש ב-SHORT_SHA יבטיח שה-Deployment תמיד ימשוך את האימג' העדכני ביותר
+        image: us-west4-docker.pkg.dev/terraform-learning-503012/my-repository/hello-cloudbuild:SHORT_SHA
         ports:
         - containerPort: 8080
