@@ -6,9 +6,18 @@ steps:
       - 'PROJECT_ROOT=app'
     args: ['build', '-o', 'main', 'main.go']
 
-  # Step 2: Build the Docker image for the Go application
+# Step 1: Build the Docker image
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-west4-docker.pkg.dev/$PROJECT_ID/my-repository/sample-app:v1.0', '.']
+    args: [
+      'build', 
+      '-t', 'us-west4-docker.pkg.dev/terraform-learning-503012/my-repository/sample-app:v1.0', 
+      '-f', 'gke-devops-workflows-challenge/Dockerfile', 
+      'gke-devops-workflows-challenge'
+    ]
+
+  # Step 2: Push the Docker image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-west4-docker.pkg.dev/terraform-learning-503012/my-repository/sample-app:v1.0']
 
   # Step 3: Push the Docker image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
