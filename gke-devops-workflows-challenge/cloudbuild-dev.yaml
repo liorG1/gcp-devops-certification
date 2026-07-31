@@ -1,7 +1,9 @@
 steps:
-  # Step 0: Compile the Go binary
+  # Step 0: Compile the Go binary using PROJECT_ROOT environment variable
   - name: 'gcr.io/cloud-builders/go'
     dir: 'gke-devops-workflows-challenge'
+    env:
+      - 'PROJECT_ROOT=app'
     args: ['build', '-o', 'main', 'main.go']
 
   # Step 2: Build the Docker image for the Go application
