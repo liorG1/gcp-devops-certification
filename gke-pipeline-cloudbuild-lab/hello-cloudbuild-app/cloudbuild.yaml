@@ -3,8 +3,12 @@ steps:
 - name: 'python:3.7-slim'
   id: 'Test'
   dir: 'gke-pipeline-cloudbuild-lab/hello-cloudbuild-app'
-  entrypoint: 'python'
-  args: ['-m', 'unittest', 'test_app.py']
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    pip install flask
+    python -m unittest test_app.py
 
 # Step 1: Build Docker Image
 - name: 'gcr.io/cloud-builders/docker'
