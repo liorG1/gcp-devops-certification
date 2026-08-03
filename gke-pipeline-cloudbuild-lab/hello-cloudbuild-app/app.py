@@ -18,7 +18,7 @@ app = Flask('hello-cloudbuild')
 
 @app.route('/')
 def hello():
-  return "Hello World from WSL and Cloud Build and lior getahun א=the king!\n"
+  return "Hello World from WSL and Cloud Build and lior getahun the king!\n"
 
 if __name__ == '__main__':
   app.run(host = '0.0.0.0', port = 8080)
