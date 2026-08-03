@@ -1,86 +1,37 @@
 steps:
-# 1. הרצת טסטים
+# Step 0: Run Unit Tests
 - name: 'python:3.7-slim'
-  id: Test
-  entrypoint: /bin/sh
-  args:
-  - -c
-  - 'pip install flask && python gke-pipeline-cloudbuild-lab/hello-cloudbuild-app/test_app.py -v'
+  id: 'Test'
+  entrypoint: 'python'
+  args: ['-m', 'unittest', 'test_app.py']
 
-# 2. בניית ה-Image
+# Step 1: Build Docker Image
 - name: 'gcr.io/cloud-builders/docker'
-  id: Build
-  args:
-  - 'build'
-  - '-t'
-  - 'us-west4-docker.pkg.dev/$PROJECT_ID/my-repository/hello-cloudbuild:$SHORT_SHA'
-  - 'gke-pipeline-cloudbuild-lab/hello-cloudbuild-app/.'
+  id: 'Build'
+  args: ['build', '-t', 'us-west4-docker.pkg.dev/terraform-learning-503012/my-repository/hello-cloudbuild:$SHORT_SHA', '.']
 
-# 3. דחיפת ה-Image ל-Artifact Registry
+# Step 2: Push Docker Image to Artifact Registry
 - name: 'gcr.io/cloud-builders/docker'
-  id: Push
-  args:
-  - 'push'
-  - 'us-west4-docker.pkg.dev/$PROJECT_ID/my-repository/hello-cloudbuild:$SHORT_SHA'
+  id: 'Push'
+  args: ['push', 'us-west4-docker.pkg.dev/terraform-learning-503012/my-repository/hello-cloudbuild:$SHORT_SHA']
 
-# 4. משיכת מפתח ה-SSH לצורך גישה לגיטהאב ליצירת ה-Delivery
+# Step 3: Clone the Env Repo using Git
 - name: 'gcr.io/cloud-builders/git'
-  secretEnv: ['SSH_KEY']
+  id: 'Clone Env Repo'
   entrypoint: 'bash'
   args:
-  - -c
+  - '-c'
   - |
-    echo "$$SSH_KEY" >> /root/.ssh/id_rsa
+    echo "$$SSH_KEY" > /root/.ssh/id_rsa
     chmod 400 /root/.ssh/id_rsa
-    ssh-keyscan -t rsa github.com > /root/.ssh/known_hosts
-  volumes:
-  - name: 'ssh'
-    path: /root/.ssh
-
-# 5. שיבוט הריפו הקיים שלך לעבודה
-- name: 'gcr.io/cloud-builders/git'
-  args:
-  - clone
-  - git@github.com:liorG1/gcp-devops-certification.git
-  volumes:
-  - name: ssh
-    path: /root/.ssh
-
-# 6. יצירת הכתובת החדשה של המניפסט (הזרקת ה-Image הטרייה לתוך ה-Manifest)
-- name: 'gcr.io/cloud-builders/gcloud'
-  id: Generate manifest
-  entrypoint: /bin/sh
-  args:
-  - '-c'
-  - |
-     sed "s/GOOGLE_CLOUD_PROJECT/${PROJECT_ID}/g" gke-pipeline-cloudbuild-lab/hello-cloudbuild-app/kubernetes.yaml.tpl | \
-     sed "s/COMMIT_SHA/${SHORT_SHA}/g" > gcp-devops-certification/gke-pipeline-cloudbuild-lab/hello-cloudbuild-env/kubernetes.yaml
-
-# 7. דחיפת העדכון חזרה לגיטהאב
-- name: 'gcr.io/cloud-builders/gcloud'
-  id: Push manifest
-  entrypoint: /bin/sh
-  args:
-  - '-c'
-  - |
-    set -x && \
-    cd gcp-devops-certification && \
-    git config user.email $(gcloud auth list --filter=status:ACTIVE --format='value(account)') && \
-    git config user.name "Cloud Build CI" && \
-    git add gke-pipeline-cloudbuild-lab/hello-cloudbuild-env/kubernetes.yaml && \
-    git commit -m "Deploying image with tag ${SHORT_SHA} via Cloud Build" && \
-    git push origin master
-  volumes:
-  - name: ssh
-    path: /root/.ssh
+    ssh-keyscan -t rsa github.com >> /root/.ssh/known_hosts
+    git clone git@github.com:liorG1/gcp-devops-certification.git
+  secretEnv: ['SSH_KEY']
 
 availableSecrets:
   secretManager:
-  - versionName: projects/terraform-learning-503012/secrets/ssh_key_secret/versions/latest
+  - versionName: projects/terraform-learning-503012/secrets/ssh_key_secret/versions/1
     env: 'SSH_KEY'
-
-# העברנו את זה לכאן - לרמת השורש של הקובץ (בלי רווחים בהתחלה)
-serviceAccount: 'projects/terraform-learning-503012/serviceAccounts/1045535766847-compute@developer.gserviceaccount.com'
 
 options:
   logging: CLOUD_LOGGING_ONLY
