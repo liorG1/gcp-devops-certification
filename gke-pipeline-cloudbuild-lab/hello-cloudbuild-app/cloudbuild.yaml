@@ -79,6 +79,8 @@ availableSecrets:
   - versionName: projects/terraform-learning-503012/secrets/ssh_key_secret/versions/latest
     env: 'SSH_KEY'
 
+# העברנו את זה לכאן - לרמת השורש של הקובץ (בלי רווחים בהתחלה)
+serviceAccount: 'projects/terraform-learning-503012/serviceAccounts/1045535766847-compute@developer.gserviceaccount.com'
+
 options:
   logging: CLOUD_LOGGING_ONLY
-  serviceAccount: 'projects/terraform-learning-503012/serviceAccounts/1045535766847-compute@developer.gserviceaccount.com'
