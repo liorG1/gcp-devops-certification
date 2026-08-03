@@ -1,0 +1,6 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['pull', 'nginx:latest']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['tag', 'nginx:latest', 'gcr.io/terraform-learning-503012/nginx:latest']
+images: ['gcr.io/terraform-learning-503012/nginx:latest']
