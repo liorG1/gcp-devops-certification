@@ -76,8 +76,7 @@ steps:
 
 availableSecrets:
   secretManager:
-  - versionName: projects/terraform-learning-503012/secrets/ssh_key_secret/versions/1
+  - versionName: projects/terraform-learning-503012/secrets/ssh_key_secret/versions/latest
     env: 'SSH_KEY'
-
 options:
   logging: CLOUD_LOGGING_ONLY
