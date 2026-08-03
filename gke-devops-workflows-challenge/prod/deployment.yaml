@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: production-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: production-app
+  template:
+    metadata:
+      labels:
+        app: production-app
+    spec:
+      containers:
+      - name: production-container
+        # שימוש ב-SHORT_SHA יבטיח שה-Deployment תמיד ימשוך את האימג' העדכני ביותר
+        image: us-west4-docker.pkg.dev/terraform-learning-503012/my-repository/hello-cloudbuild:SHORT_SHA
+        ports:
+        - containerPort: 8080

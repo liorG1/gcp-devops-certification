@@ -1,0 +1,46 @@
+steps:
+# 1. הרצת בדיקות יוניט
+- name: 'python:3.7-slim'
+  id: Test
+  dir: 'gke-gitops-cloudbuild/hello-cloudbuild-app'
+  entrypoint: /bin/sh
+  args:
+  - -c
+  - 'pip install flask && python test_app.py -v'
+
+# 2. בניית ה-Docker Image
+- name: 'gcr.io/cloud-builders/docker'
+  id: Build
+  dir: 'gke-gitops-cloudbuild/hello-cloudbuild-app'
+  args:
+  - 'build'
+  - '-t'
+  - 'us-west4-docker.pkg.dev/$PROJECT_ID/my-repository/hello-cloudbuild:$SHORT_SHA'
+  - '.'
+
+# 3. דחיפה ל-Artifact Registry
+- name: 'gcr.io/cloud-builders/docker'
+  id: Push
+  args:
+  - 'push'
+  - 'us-west4-docker.pkg.dev/$PROJECT_ID/my-repository/hello-cloudbuild:$SHORT_SHA'
+
+# 4. שלב ה-CD: יצירת המניפסט עם ה-Tag המעודכן
+- name: 'gcr.io/cloud-builders/git'
+  id: 'Generate Manifest'
+  entrypoint: /bin/sh
+  args:
+  - '-c'
+  - 'sed "s|COMMIT_SHA|$PROJECT_ID/my-repository/hello-cloudbuild:$SHORT_SHA|g" gke-gitops-cloudbuild/kubernetes.yaml.tpl > gke-gitops-cloudbuild/gke-gitops-env/kubernetes.yaml'
+
+# 5. שלב ה-CD הסופי: פריסה לתוך ה-GKE Cluster האמיתי
+- name: 'gcr.io/cloud-builders/gke-deploy'
+  id: 'Deploy to GKE Cluster'
+  args:
+  - 'run'
+  - '--filename=gke-gitops-cloudbuild/gke-gitops-env/kubernetes.yaml'
+  - '--cluster=hello-cloudbuild'
+  - '--location=us-west4'
+
+options:
+  logging: CLOUD_LOGGING_ONLY

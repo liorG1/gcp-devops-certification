@@ -1,0 +1,43 @@
+steps:
+  # Step 0: Compile the Go Application (With fix for workspace)
+  - name: 'gcr.io/cloud-builders/go'
+    id: 'Compile application'
+    dir: 'gke-devops-workflows-challenge'
+    env:
+      - 'PROJECT_ROOT=app'
+    args: ['build', '-o', 'main', 'main.go']
+
+  # Step 1: Build the Docker image for the Go application
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Build Docker image'
+    args: [
+      'build', 
+      '-t', 'us-west4-docker.pkg.dev/terraform-learning-503012/my-repository/hello-cloudbuild:$SHORT_SHA', 
+      '-f', 'gke-devops-workflows-challenge/Dockerfile', 
+      'gke-devops-workflows-challenge'
+    ]
+
+  # Step 2: Push the Docker image to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'Push Docker image'
+    args: ['push', 'us-west4-docker.pkg.dev/terraform-learning-503012/my-repository/hello-cloudbuild:$SHORT_SHA']
+
+  # Step 3: Dynamic tag substitution in deployment file
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'Prepare deployment file'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        sed -i "s/SHORT_SHA/$SHORT_SHA/g" gke-devops-workflows-challenge/prod/deployment.yaml
+
+  # Step 4: Apply the production deployment YAML file to the production namespace
+  - name: 'gcr.io/cloud-builders/kubectl'
+    id: 'Deploy'
+    args: ['apply', '-f', 'gke-devops-workflows-challenge/prod/', '-n', 'prod']
+    env:
+    - 'CLOUDSDK_COMPUTE_REGION=us-west4-a'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=hello-cluster'
+
+options:
+  logging: CLOUD_LOGGING_ONLY

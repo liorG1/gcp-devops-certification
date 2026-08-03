@@ -1,0 +1,1 @@
+print("Hello from GCP DevOps CI/CD Lab! Build Successful.")

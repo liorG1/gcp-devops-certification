@@ -4,3 +4,16 @@
 *.pgp
 *.json
 policy.yaml
+# Dependencies
+node_modules/
+dist/
+.npm/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Environment variables (just in case you use them later)
+.env
+.env.local
+ad6d09da7e03e665bc5465bb7e163f25512a3727

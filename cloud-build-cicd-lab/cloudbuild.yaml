@@ -1,0 +1,14 @@
+steps:
+  # שלב 1: בניית ה-Docker Image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', '${_REGION}-docker.pkg.dev/${PROJECT_ID}/devops-lab-images/sample-app:latest', '.']
+
+  # שלב 2: דחיפת ה-Image ל-Artifact Registry שייצרנו בטרפורם
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', '${_REGION}-docker.pkg.dev/${PROJECT_ID}/devops-lab-images/sample-app:latest']
+
+substitutions:
+  _REGION: us-west4
+
+options:
+  logging: CLOUD_LOGGING_ONLY

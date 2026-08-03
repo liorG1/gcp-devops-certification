@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fortune-app-canary
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fortune-app
+  template:
+    metadata:
+      labels:
+        app: fortune-app
+        track: canary
+        version: "3.0.0"
+    spec:
+      containers:
+        - name: fortune-app
+          image: "us-central1-docker.pkg.dev/qwiklabs-resources/spl-lab-apps/fortune-service:1.0.0"
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: APP_VERSION
+              value: "3.0.0"
+          resources:
+            limits:
+              cpu: "0.2"
+              memory: "20Mi"
