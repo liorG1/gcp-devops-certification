@@ -30,9 +30,9 @@ steps:
   - '-c'
   - |
     mkdir -p /root/.ssh
-    echo "-----BEGIN OPENSSH PRIVATE KEY-----
-    מפתח_כאן
-    -----END OPENSSH PRIVATE KEY-----" > /root/.ssh/id_rsa
+    cat << 'INNER_EOF' > /root/.ssh/id_rsa
+    YOUR_PRIVATE_KEY_HERE
+    INNER_EOF
     chmod 600 /root/.ssh/id_rsa
     ssh-keyscan -t rsa github.com >> /root/.ssh/known_hosts
     git clone git@github.com:liorG1/gcp-devops-certification.git
