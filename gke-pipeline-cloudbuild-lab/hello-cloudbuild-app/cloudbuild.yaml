@@ -2,17 +2,20 @@ steps:
 # Step 0: Run Unit Tests
 - name: 'python:3.7-slim'
   id: 'Test'
+  dir: 'gke-pipeline-cloudbuild-lab/hello-cloudbuild-app'
   entrypoint: 'python'
   args: ['-m', 'unittest', 'test_app.py']
 
 # Step 1: Build Docker Image
 - name: 'gcr.io/cloud-builders/docker'
   id: 'Build'
+  dir: 'gke-pipeline-cloudbuild-lab/hello-cloudbuild-app'
   args: ['build', '-t', 'us-west4-docker.pkg.dev/terraform-learning-503012/my-repository/hello-cloudbuild:$SHORT_SHA', '.']
 
 # Step 2: Push Docker Image to Artifact Registry
 - name: 'gcr.io/cloud-builders/docker'
   id: 'Push'
+  dir: 'gke-pipeline-cloudbuild-lab/hello-cloudbuild-app'
   args: ['push', 'us-west4-docker.pkg.dev/terraform-learning-503012/my-repository/hello-cloudbuild:$SHORT_SHA']
 
 # Step 3: Clone the Env Repo using Git
@@ -22,16 +25,13 @@ steps:
   args:
   - '-c'
   - |
-    echo "$$SSH_KEY" > /root/.ssh/id_rsa
-    chmod 400 /root/.ssh/id_rsa
+    mkdir -p /root/.ssh
+    echo "-----BEGIN OPENSSH PRIVATE KEY-----
+    מפתח_כאן
+    -----END OPENSSH PRIVATE KEY-----" > /root/.ssh/id_rsa
+    chmod 600 /root/.ssh/id_rsa
     ssh-keyscan -t rsa github.com >> /root/.ssh/known_hosts
     git clone git@github.com:liorG1/gcp-devops-certification.git
-  secretEnv: ['SSH_KEY']
-
-availableSecrets:
-  secretManager:
-  - versionName: projects/terraform-learning-503012/secrets/ssh_key_secret/versions/1
-    env: 'SSH_KEY'
 
 options:
   logging: CLOUD_LOGGING_ONLY
