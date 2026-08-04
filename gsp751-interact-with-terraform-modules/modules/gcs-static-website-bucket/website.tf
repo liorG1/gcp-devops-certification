@@ -10,3 +10,10 @@ resource "google_storage_bucket" "bucket" {
     not_found_page   = "404.html"
   }
 }
+
+# הענקת הרשאת קריאה ציבורית לכל האובייקטים ב-Bucket
+resource "google_storage_bucket_iam_member" "public_rule" {
+  bucket = google_storage_bucket.bucket.name
+  role   = "roles/storage.objectViewer"
+  member = "allUsers"
+}
