@@ -17,3 +17,6 @@ Thumbs.db
 .env
 .env.local
 ad6d09da7e03e665bc5465bb7e163f25512a3727
+*.tar
+*.zip
+cloudbuild.yaml
